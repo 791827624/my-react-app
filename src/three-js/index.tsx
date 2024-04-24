@@ -2,11 +2,9 @@ import React, { useEffect, useLayoutEffect } from "react";
 import * as THREE from "three";
 export const MyThree = () => {
   useLayoutEffect(() => {
-    const { Box2, Scene } = THREE;
+    const { Scene } = THREE;
 
     const scene = new Scene();
-
-    const box = new Box2();
 
     const geometry = new THREE.BoxGeometry(100, 100, 100);
 
