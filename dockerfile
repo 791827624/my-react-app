@@ -26,4 +26,4 @@ FROM nginx:latest
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # 将 app/build 目录中的文件复制到 Nginx 的默认站点目录
-COPY app/build /usr/share/nginx/html
+COPY --from=base app/build /usr/share/nginx/html
