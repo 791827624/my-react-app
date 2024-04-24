@@ -1,7 +1,13 @@
-import { ConfigProvider, Layout, Menu, MenuProps } from "antd";
-import { Header, Content } from "antd/es/layout/layout";
-import React, { PropsWithChildren } from "react";
-import { Outlet, useHref, useLocation, useNavigate } from "react-router-dom";
+import { ConfigProvider, Layout, Menu, MenuProps } from "antd"
+import { Header, Content } from "antd/es/layout/layout"
+import React, { PropsWithChildren } from "react"
+import {
+  Link,
+  Outlet,
+  useHref,
+  useLocation,
+  useNavigate,
+} from "react-router-dom"
 
 const THEME = {
   primary: "#262A2F",
@@ -22,14 +28,14 @@ const THEME = {
   darkGreen: "#00AE70",
   lightGreen: "#0CD68D",
   overlayGreen: "#5A7B6F",
-};
+}
 
 export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
   children,
 }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const location = useLocation();
+  const location = useLocation()
 
   return (
     <ConfigProvider
@@ -99,25 +105,12 @@ export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
           <div className="demo-logo" />
           <Menu
             theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["2"]}
             items={[
               {
                 key: "home",
-                label: "首页",
-                onClick: () => {
-                  navigate("/home");
-                },
-              },
-              {
-                key: "lili",
-                label: "我儿帅照",
-                onClick: () => {
-                  navigate("/lili");
-                },
+                label: <Link to="home">首页</Link>,
               },
             ]}
-            style={{ flex: 1, minWidth: 0 }}
           />
         </Header>
 
@@ -126,5 +119,5 @@ export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
         </Content>
       </Layout>
     </ConfigProvider>
-  );
-};
+  )
+}
