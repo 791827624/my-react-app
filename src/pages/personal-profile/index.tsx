@@ -1,5 +1,4 @@
-import React from "react"
-import { Link } from "react-router-dom"
+import React from "react";
 
 export const PersonalProfile = () => {
   return (
@@ -16,5 +15,5 @@ export const PersonalProfile = () => {
         height={"100%"}
       />
     </div>
-  )
-}
+  );
+};

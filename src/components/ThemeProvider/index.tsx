@@ -1,41 +1,21 @@
-import { ConfigProvider, Layout, Menu, MenuProps } from "antd"
-import { Header, Content } from "antd/es/layout/layout"
-import React, { PropsWithChildren } from "react"
+import { THEME } from "theme";
+import { ConfigProvider, Layout, Menu, MenuProps } from "antd";
+import { Header, Content } from "antd/es/layout/layout";
+import React, { PropsWithChildren } from "react";
 import {
   Link,
   Outlet,
   useHref,
   useLocation,
   useNavigate,
-} from "react-router-dom"
-
-const THEME = {
-  primary: "#262A2F",
-  secondary: "#959A9F",
-  third: "#BDC1C6",
-  fourth: "#E2E5E7",
-  fifth: "#F0F3F4",
-  base: "#F9FAFB",
-  background: "#FFFFFF",
-  branding: "#06C27F",
-  branding_10: "rgba(6, 194, 127, 0.10)",
-  branding_120: "#059B66",
-  pending: "#FFBE3D",
-  // 非 prism 定义的color
-  warning: "#FF6336",
-  green: "#9BC655",
-  orange: "#FF6336",
-  darkGreen: "#00AE70",
-  lightGreen: "#0CD68D",
-  overlayGreen: "#5A7B6F",
-}
+} from "react-router-dom";
 
 export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
   children,
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <ConfigProvider
@@ -114,10 +94,10 @@ export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
           />
         </Header>
 
-        <Content style={{ padding: "0 48px", height: `calc(100vh - 64px)` }}>
+        <Content style={{ padding: "0 0", height: `calc(100vh - 64px)` }}>
           {location.pathname === "/" ? children : <Outlet />}
         </Content>
       </Layout>
     </ConfigProvider>
-  )
-}
+  );
+};

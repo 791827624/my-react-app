@@ -1,17 +1,11 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import {
-  RouterProvider,
-  createBrowserRouter,
-  useNavigate,
-  Link,
-} from "react-router-dom"
-import "./App.css"
-import React, { useEffect } from "react"
-import { Lili } from "./pages/lili"
-import { ThemeProvider } from "./components/ThemeProvider"
-import { Outlet } from "react-router-dom"
-import { Card } from "antd"
-import { PersonalProfile } from "./pages/personal-profile"
+import { RouterProvider, createBrowserRouter, Link } from "react-router-dom";
+import "./App.css";
+import React from "react";
+import { Lili } from "./pages/lili";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { Card } from "antd";
+import { PersonalProfile } from "./pages/personal-profile";
+import { MyComponents } from "./pages/my-components";
 
 const MyWords = () => (
   <div>
@@ -27,16 +21,24 @@ const MyWords = () => (
       </p>
     </Card>
   </div>
-)
+);
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <ThemeProvider>{<MyWords />}</ThemeProvider>,
+    element: (
+      <ThemeProvider>
+        <MyWords />
+      </ThemeProvider>
+    ),
     children: [
       {
         path: "home",
-        element: <div>{<MyWords />}</div>,
+        element: <MyWords />,
+      },
+      {
+        path: "my-components",
+        element: <MyComponents />,
       },
       {
         path: "lili-hub",
@@ -48,10 +50,10 @@ const router = createBrowserRouter([
       },
     ],
   },
-])
+]);
 
 function App() {
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
