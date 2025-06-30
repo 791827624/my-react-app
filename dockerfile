@@ -1,4 +1,4 @@
-# 阶段1：构建阶段
+# 阶段1：构建阶段 (保持不变)
 FROM node:20-alpine AS builder
 
 # 设置工作目录
@@ -17,20 +17,27 @@ COPY . .
 RUN yarn build
 
 # ----------------------------
-# 阶段2：生产环境
+# 阶段2：生产环境 (主要修改部分)
 FROM nginx:stable-alpine
 
-# 5. 删除默认配置
-RUN rm /etc/nginx/conf.d/default.conf
+# 5. 清理默认配置 (改为删除整个conf.d目录内容)
+RUN rm -rf /etc/nginx/conf.d/*
 
-# 6. 复制自定义Nginx配置
-COPY nginx.conf /etc/nginx/conf.d/
+# 6. 复制拆分后的Nginx配置 (关键修改)
+# 6.1 主配置文件放到正确位置
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+# 6.2 应用配置重命名为default.conf确保被自动加载
+COPY nginx/app.conf /etc/nginx/conf.d/default.conf
 
-# 7. 从构建阶段复制产物
+# 7. 从构建阶段复制产物 (保持不变)
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# 8. 暴露端口
+# 8. 添加权限控制 (新增)
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# 9. 暴露端口 (保持不变)
 EXPOSE 80
 
-# 9. 启动Nginx（前台运行）
+# 10. 启动Nginx (保持不变)
 CMD ["nginx", "-g", "daemon off;"]
