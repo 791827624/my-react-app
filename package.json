@@ -12,19 +12,22 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/uuid": "^9.0.7",
+    "@typescript-eslint/parser": "^8.35.0",
     "ahooks": "^3.7.8",
     "antd": "^5.16.4",
     "axios": "^0.27.2",
     "dayjs": "^1.10.5",
     "emotion": "^11.0.0",
+    "eslint": "^9.30.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-flowtype": "^8.0.3",
     "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.21",
     "prettier": "^1.19.1",
-    "prettier-eslint": "^9.0.1",
+    "prettier-eslint": "^16.4.2",
     "prettier-eslint-cli": "^5.0.0",
     "qiankun": "^2.10.15",
     "react": "^18.2.0",
@@ -66,8 +69,12 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-syntax-flow": "^7.27.1",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@testing-library/dom": "^10.4.0",
     "@types/lodash": "^4.17.0",
-    "@types/three": "^0.163.0"
+    "@types/three": "^0.163.0",
+    "redux": "^5.0.1"
   },
   "resolutions": {
     "eslint": "^8.57.0",
