@@ -18,7 +18,7 @@
     "axios": "^0.27.2",
     "dayjs": "^1.10.5",
     "emotion": "^11.0.0",
-    "eslint": "^9.30.0",
+    "eslint": "^8.0.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-flowtype": "^8.0.3",
     "highcharts": "^8.1.2",
@@ -28,7 +28,7 @@
     "lodash": "^4.17.21",
     "prettier": "^1.19.1",
     "prettier-eslint": "^16.4.2",
-    "prettier-eslint-cli": "^5.0.0",
+    "prettier-eslint-cli": "^8.0.1",
     "qiankun": "^2.10.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -69,6 +69,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
     "@babel/plugin-syntax-flow": "^7.27.1",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@testing-library/dom": "^10.4.0",
