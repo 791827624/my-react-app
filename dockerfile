@@ -1,29 +1,36 @@
-# 使用 Node 镜像作为基础镜像
-FROM node:20 as base
+# 阶段1：构建阶段
+FROM node:20-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
 
-# 复制 package.json 和 package-lock.json 并安装依赖
-COPY package*.json ./
-COPY yarn.lock ./
-RUN yarn install --frozen-lockfile
+# 1. 先只复制包管理文件（利用Docker缓存层）
+COPY package.json yarn.lock ./
 
-# 复制应用程序代码
+# 2. 安装依赖（使用frozen-lockfile确保一致性）
+RUN yarn install --frozen-lockfile --production=false
+
+# 3. 复制所有源代码
 COPY . .
 
-# 构建生产环境应用
-RUN yarn run build
+# 4. 执行构建
+RUN yarn build
 
+# ----------------------------
+# 阶段2：生产环境
 FROM nginx:stable-alpine
 
-COPY --from=base /app/build /usr/share/nginx/html
+# 5. 删除默认配置
+RUN rm /etc/nginx/conf.d/default.conf
 
-# 使用官方的 Nginx 镜像作为基础
-FROM nginx:latest
+# 6. 复制自定义Nginx配置
+COPY nginx.conf /etc/nginx/conf.d/
 
-# 复制自定义的 Nginx 配置文件到容器内
-COPY nginx.conf /etc/nginx/nginx.conf
+# 7. 从构建阶段复制产物
+COPY --from=builder /app/build /usr/share/nginx/html
 
-# 将 app/build 目录中的文件复制到 Nginx 的默认站点目录
-COPY --from=base app/build /usr/share/nginx/html
+# 8. 暴露端口
+EXPOSE 80
+
+# 9. 启动Nginx（前台运行）
+CMD ["nginx", "-g", "daemon off;"]
