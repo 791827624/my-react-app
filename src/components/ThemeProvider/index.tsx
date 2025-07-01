@@ -1,21 +1,14 @@
-import { THEME } from "theme";
-import { ConfigProvider, Layout, Menu, MenuProps } from "antd";
-import { Header, Content } from "antd/es/layout/layout";
-import React, { PropsWithChildren } from "react";
-import {
-  Link,
-  Outlet,
-  useHref,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { ConfigProvider, Layout, Menu } from 'antd'
+import { Content, Header } from 'antd/es/layout/layout'
+import React, { PropsWithChildren } from 'react'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { THEME } from 'theme'
+import { cssLayout } from './index.style'
 
-export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
-  children,
-}) => {
-  const navigate = useNavigate();
+export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({ children }) => {
+  const navigate = useNavigate()
 
-  const location = useLocation();
+  const location = useLocation()
 
   return (
     <ConfigProvider
@@ -69,35 +62,42 @@ export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({
             cellPaddingBlockSM: 5,
           },
         },
-      }}
-    >
-      <Layout>
+      }}>
+      <Layout className={cssLayout}>
         <Header
           style={{
-            position: "sticky",
+            position: 'sticky',
             top: 0,
             zIndex: 1,
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <div className="demo-logo" />
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+          <div className='demo-logo' />
           <Menu
-            theme="dark"
+            theme='dark'
+            className='menu-body'
             items={[
               {
-                key: "home",
-                label: <Link to="home">首页</Link>,
+                key: 'home',
+                label: <Link to='home'>首页</Link>,
+              },
+              {
+                key: 'my-components',
+                label: <Link to='my-components'>我的组件</Link>,
+              },
+              {
+                key: 'wheather',
+                label: <Link to='wheather'>天气查询</Link>,
               },
             ]}
           />
         </Header>
 
-        <Content style={{ padding: "0 0", height: `calc(100vh - 64px)` }}>
-          {location.pathname === "/" ? children : <Outlet />}
+        <Content style={{ padding: '0 0', height: `calc(100vh - 64px)` }}>
+          {location.pathname === '/' ? children : <Outlet />}
         </Content>
       </Layout>
     </ConfigProvider>
-  );
-};
+  )
+}

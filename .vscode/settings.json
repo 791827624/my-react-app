@@ -1,5 +1,61 @@
 {
-    "cSpell.words": [
-        "lili"
-    ]
+  // ===== 1. Emotion CSS 支持 =====
+  "emotion.inlineStyles": true,
+  "javascript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": true,
+  // ===== 2. TypeScript 配置 =====
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  // ===== 3. 代码格式化配置 =====
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
+  "prettier.semi": false,
+  "prettier.printWidth": 100,
+  "prettier.tabWidth": 2,
+  "prettier.bracketSameLine": true,
+  "prettier.jsxBracketSameLine": true,
+  // ===== 4. CSS/Emotion 智能提示 =====
+  "css.customData": [
+    ".vscode/css_custom_data.json"
+  ],
+  "editor.quickSuggestions": {
+    "strings": true,
+    "other": true,
+    "comments": false
+  },
+  "scss.validate": false, // 禁用原生CSS验证避免冲突
+  // ===== 5. React 开发优化 =====
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "path-intellisense.autoSlash": true,
+  // ===== 6. 文件关联 =====
+  "files.associations": {
+    "*.css": "css",
+    "*.styles": "typescriptreact"
+  },
+  // ===== 7. 扩展特定设置 =====
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

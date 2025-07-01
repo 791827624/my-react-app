@@ -1,0 +1,18 @@
+{
+  "version": 1.1,
+  "properties": [
+    {
+      "name": "display",
+      "values": ["flex", "grid", "none", "block", "inline-flex"]
+    },
+    {
+      "name": "gap",
+      "values": ["8px", "16px", "24px", "32px"]
+    }
+  ],
+  "atDirectives": [
+    {
+      "name": "@media"
+    }
+  ]
+}

@@ -1,33 +1,40 @@
-const path = require("path");
+const path = require('path')
 
 module.exports = {
-  entry: "./src/index.js",
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"), // 设置别名 '@' 指向项目根目录路径
-    },
-  },
+  // ...其他配置保持不变
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            presets: [
+              '@babel/preset-env',
+              ['@babel/preset-react', { runtime: 'automatic' }],
+              '@babel/preset-typescript',
+            ],
+            plugins: [
+              '@emotion/babel-plugin',
+              // 其他插件...
+            ],
           },
         },
       },
+      // 添加对CSS的支持
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
-  devServer: {
-    contentBase: path.join(__dirname, "dist"),
-    compress: true,
-    port: 3000,
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@/fetch': path.resolve(__dirname, 'src/fetch'),
+    },
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
-};
+  // ...其他配置
+}

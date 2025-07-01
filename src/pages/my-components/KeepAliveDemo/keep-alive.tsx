@@ -12,7 +12,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import ReactDOM, { createPortal, render } from "react-dom";
+import ReactDOM, { createPortal, } from "react-dom";
 
 const KeeperContext = React.createContext<{
   invisibleRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;

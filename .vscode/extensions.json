@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "styled-components.vscode-styled-components",
+        "waleed-khan.emotion-css",
+        "christian-kohler.path-intellisense",
+        "usernamehw.errorlens"
+    ]
+}
