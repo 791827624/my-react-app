@@ -78,6 +78,7 @@
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@testing-library/dom": "^10.4.0",
     "@types/lodash": "^4.17.0",
+    "@types/node": "^24.0.10",
     "@types/react": "18",
     "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "18",
