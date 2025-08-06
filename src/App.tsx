@@ -1,4 +1,5 @@
 import { Card } from 'antd'
+import { Handover } from 'pages/handover'
 import { Link, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import './App.css'
 import { ThemeProvider } from './components/ThemeProvider'
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: 'wheather',
         element: <Wheather />,
+      },
+      {
+        path: 'handover',
+        element: <Handover />,
       },
     ],
   },

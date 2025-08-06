@@ -94,7 +94,7 @@ export const ThemeProvider: React.FC<PropsWithChildren<any>> = ({ children }) =>
           />
         </Header>
 
-        <Content style={{ padding: '0 0', height: `calc(100vh - 64px)` }}>
+        <Content style={{ padding: '0 0', height: `calc(100vh - 64px)`, overflow: 'auto' }}>
           {location.pathname === '/' ? children : <Outlet />}
         </Content>
       </Layout>

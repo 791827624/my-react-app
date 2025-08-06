@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "5.x",
     "@emotion/babel-plugin": "^11.13.5",
     "@emotion/css": "^11.13.5",
     "@emotion/react": "^11.14.0",
@@ -23,6 +24,7 @@
     "eslint-plugin-flowtype": "^8.0.3",
     "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
+    "http-proxy-middleware": "^3.0.5",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "lodash": "^4.17.21",
@@ -92,6 +94,5 @@
     "svgo": "^3.0.2",
     "workbox-webpack-plugin": "^7.0.0"
   },
-  "proxy": "http://localhost:3001",
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
