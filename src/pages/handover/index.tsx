@@ -217,6 +217,9 @@ export const Handover = () => {
           is_handover: {
             value: 'Y',
           },
+          name: {
+            value: name,
+          },
         }
       } else if (salesType === 'service') {
         data = {
@@ -286,25 +289,40 @@ export const Handover = () => {
 
   const batcherEdit = useCallback((item: any) => runEdit(item, dataIds[item]), [dataIds, runEdit])
 
-  const { start: batchEditStart, finished: editFinished } = useBatchRequest(batcherEdit, formIds)
+  const {
+    start: batchEditStart,
+    finished: editFinished,
+    loading: editLoading,
+  } = useBatchRequest(batcherEdit, formIds)
 
   const onHandover = useCallback(async () => {
     batchEditStart()
   }, [batchEditStart])
 
   useEffect(() => {
-    if (editFinished) {
+    if (editFinished && finished && !editLoading) {
       runHandovered()
     }
-  }, [editFinished, runHandovered])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editFinished, finished, editLoading])
 
   return (
     <div className={cssHandover}>
-      <Row align={'middle'} gutter={20}>
-        交接顾问种类:
+      <Row
+        align={'middle'}
+        justify={'start'}
+        gutter={20}
+        style={{ fontSize: 32, fontWeight: 1000, marginBottom: 16 }}>
+        <strong> 交接顾问种类:</strong>
+
         <Select
           value={salesType}
           onChange={e => setSalesType(e)}
+          style={{
+            width: 400,
+            marginLeft: 20,
+          }}
+          size='large'
           options={[
             { value: 'sales', label: '签约顾问' },
             { value: 'service', label: '服务顾问' },
@@ -312,21 +330,21 @@ export const Handover = () => {
           ]}
         />
       </Row>
-      <Row
-        align={'middle'}
-        justify={'center'}
-        style={{ fontSize: 32, fontWeight: 1000, marginBottom: 16 }}>
-        {salesType}已签约交接
-      </Row>
-      <Row align={'middle'} gutter={24}>
+      <Row align={'middle'} justify={'start'} gutter={24}>
         <Col>
+          <strong>学生id:</strong>
           <Input
             value={studentId}
+            size='large'
+            style={{
+              width: 500,
+              marginLeft: 20,
+            }}
             onChange={v => setStudentId(v.target.value?.replace(/-/g, '').trim())}
           />
         </Col>
         <Col>
-          <Button onClick={onClick} type='primary'>
+          <Button onClick={onClick} type='primary' size='large'>
             查询
           </Button>
         </Col>
