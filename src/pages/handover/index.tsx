@@ -3,7 +3,6 @@ import { css } from '@emotion/css'
 import { useRequest } from 'ahooks'
 import { Button, Col, Input, message, Modal, Row, Select, Table, Tag } from 'antd'
 import axios from 'axios'
-import { useAuth } from 'context/AuthContext'
 import { useBatchRequest } from 'hooks/useBatchFetch'
 import { get, reverse, sortBy, unionBy } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -42,7 +41,6 @@ const CUL_DEP_ID = '60'
 
 //https://api.jiandaoyun.com/api/v5/app/entry/data/list
 export const Handover = () => {
-  const { isAuthenticated } = useAuth()
   const [formIds] = useState([
     { entryId: '5f8f98247161b80006c55192', entryName: '客户资源表' },
     { entryId: '5f8f989f8a879400065605c2', entryName: '基础合同' },
