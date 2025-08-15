@@ -63,10 +63,22 @@ export function useBatchRequest<T = any>(asyncRun: AsyncRunFn<T>, ids: string[])
     })
   }, [ids, asyncRun])
 
+  // Add the reset function
+  const reset = useCallback(() => {
+    setState({
+      loading: false,
+      finished: false,
+      currentIndex: -1,
+      results: [],
+      errors: [],
+    })
+  }, [])
+
   // 返回状态和控制方法
   return {
     ...state,
     start: runBatch,
+    reset, // Add reset to the returned object
     progress: state.currentIndex + 1, // 当前完成的数量
     total: ids.length, // 总任务数
   }

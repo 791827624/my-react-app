@@ -1,11 +1,13 @@
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import { css } from '@emotion/css'
 import { useRequest } from 'ahooks'
-import { Button, Col, Input, message, Row, Select, Tag } from 'antd'
+import { Button, Col, Input, message, Modal, Row, Select, Table, Tag } from 'antd'
 import axios from 'axios'
+import { useAuth } from 'context/AuthContext'
 import { useBatchRequest } from 'hooks/useBatchFetch'
 import { get, reverse, sortBy, unionBy } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { HandoverModal } from './Modal'
 
 const dataGetter = axios.create({
   baseURL: '/jiandaoyun/api/v5/app/entry/data',
@@ -40,28 +42,29 @@ const CUL_DEP_ID = '60'
 
 //https://api.jiandaoyun.com/api/v5/app/entry/data/list
 export const Handover = () => {
+  const { isAuthenticated } = useAuth()
   const [formIds] = useState([
-    '5f8f98247161b80006c55192', // 客户资源表
-    '5f8f989f8a879400065605c2', // 基础合同
-    '600e7656a72a6f00073f4576', // 加申
-    '60a4a89eae49f40007b6279d', // 加申
-    '6712241cd41ea8d184e7c6c6', // 本科中期规划工作表
-    '6732e98b6589e318d8ed481d', // 本科申请季进度表
-    '603080d9f532e100075b4cc9', // 转案
-    '60a35cbe8b4b950007d2ff42', // 终版
-    '604efc489c082600072ba09b', // 方案条目表
-    '60a222f6f0c2b40007009c93', // 学生材料库
-    '60a5d63163ea180008bb5ed6', // 确认入读/延期入读
-    '5f8f995e143c580007fd7936', // 确认入读/延期入读
-    '609b86636c7c7500079d3d55', // FC Worksheet_New
-    '6037095ac103cf0007007b9d', // 客户综合信息表
-    '60374b39563847000788cbe9', // 院校申请进度表
-    '60dd65d4e247730008d66b68', // 递交表
-    '6095e8f92642ab0008337435', // 文创工作任务表
-    '60f65afac15d390008d1489b', // 学生文书集合
+    { entryId: '5f8f98247161b80006c55192', entryName: '客户资源表' },
+    { entryId: '5f8f989f8a879400065605c2', entryName: '基础合同' },
+    { entryId: '600e7656a72a6f00073f4576', entryName: '加申' },
+    { entryId: '60a4a89eae49f40007b6279d', entryName: '加申' },
+    { entryId: '6712241cd41ea8d184e7c6c6', entryName: '本科中期规划工作表' },
+    { entryId: '6732e98b6589e318d8ed481d', entryName: '本科申请季进度表' },
+    { entryId: '603080d9f532e100075b4cc9', entryName: '转案' },
+    { entryId: '60a35cbe8b4b950007d2ff42', entryName: '终版' },
+    { entryId: '604efc489c082600072ba09b', entryName: '方案条目表' },
+    { entryId: '60a222f6f0c2b40007009c93', entryName: '学生材料库' },
+    { entryId: '60a5d63163ea180008bb5ed6', entryName: '确认入读/延期入读' },
+    { entryId: '5f8f995e143c580007fd7936', entryName: '确认入读/延期入读' },
+    { entryId: '609b86636c7c7500079d3d55', entryName: 'FC Worksheet_New' },
+    { entryId: '6037095ac103cf0007007b9d', entryName: '客户综合信息表' },
+    { entryId: '60374b39563847000788cbe9', entryName: '院校申请进度表' },
+    { entryId: '60dd65d4e247730008d66b68', entryName: '递交表' },
+    { entryId: '6095e8f92642ab0008337435', entryName: '文创工作任务表' },
+    { entryId: '60f65afac15d390008d1489b', entryName: '学生文书集合' },
   ])
   const [salesType, setSalesType] = useState<'cultural' | 'service' | 'sales'>('sales')
-  const [studentId, setStudentId] = useState<string | undefined>('')
+  const [studentId, setStudentId] = useState<string>('')
   const [deps, setDeps] = useState<any[]>([])
   const [saleIdInput, setSaleIdInput] = useState('')
   const [name, setName] = useState('')
@@ -70,11 +73,12 @@ export const Handover = () => {
   const [department, setDepartmentInput] = useState('')
   const [entryMapStatus, setEntryMapStatus] = useState<any>({})
   const [dataIds, setDataIds] = useState<any>({})
-  const [studentInfos, setStudentInfos] = useState<any>([])
+  const [studentInfos, setStudentInfos] = useState<any[]>([])
+  const [allStudent, setAllStudents] = useState<any[]>([])
+  const [isTransform, setIsTransform] = useState<boolean>(false)
+  const [visible, setVisible] = useState<boolean>(false)
 
   const studentIds = useMemo(() => studentId?.split(' '), [studentId])
-
-  console.log('🚀 ~ Handover ~ dataIds:', studentInfos, studentIds, dataIds)
 
   useRequest(
     async () => {
@@ -92,7 +96,7 @@ export const Handover = () => {
     },
     {
       refreshDeps: [salesType],
-      onSuccess({ data }) {
+      onSuccess({ data }: any) {
         const { departments } = data
         setDeps(
           reverse(
@@ -112,12 +116,38 @@ export const Handover = () => {
     }
   )
 
+  const { runAsync: runTransformRecord } = useRequest(
+    async () => {
+      await dataGetter.post('/batch_create', {
+        app_id: APP_ID,
+        entry_id: '61c2921214dfbe000719d58c',
+        data_list: allStudent?.map((sdt: any) => {
+          return {
+            lx_id: {
+              value: get(sdt, 'lx_id'),
+            },
+            sales_json: {
+              value: saleIdInput,
+            },
+            department: {
+              value: department,
+            },
+            type: { value: '再分配' },
+          }
+        }),
+      })
+    },
+    {
+      manual: true,
+    }
+  )
+
   const { runAsync: runHandovered } = useRequest(
     async () => {
       await dataGetter.post('/batch_create', {
         app_id: APP_ID,
         entry_id: '611ca27acaf9e60008142aed',
-        data_list: studentInfos?.map((sdt: any) => {
+        data_list: allStudent?.map((sdt: any) => {
           return {
             lx_id: {
               value: get(sdt, 'lx_id'),
@@ -139,8 +169,7 @@ export const Handover = () => {
   )
 
   const { runAsync: studentsFetcher } = useRequest(
-    async (ids, entry_id) => {
-      console.log('🚀 ~ Handover ~ value:', ids)
+    async (ids: any, entry_id: string) => {
       const response = await dataGetter.post('/list', {
         app_id: APP_ID,
         entry_id,
@@ -172,7 +201,6 @@ export const Handover = () => {
         )
         setStudentInfos(studentIdMap)
       }
-      console.log('🚀 ~ Handover ~ response.data.data:', response.data.data)
 
       setDataIds((v: any) => ({
         ...v,
@@ -191,10 +219,13 @@ export const Handover = () => {
     [studentIds, studentsFetcher]
   )
 
-  const { start, loading, finished } = useBatchRequest(batcherSearch, formIds)
+  const { start, loading, finished } = useBatchRequest(
+    batcherSearch,
+    formIds.map(item => item.entryId)
+  )
 
   const { runAsync: runEdit } = useRequest(
-    async (entry_id, data_ids) => {
+    async (entry_id: any, data_ids: any) => {
       let data: any = {}
 
       if (salesType === 'sales') {
@@ -262,6 +293,10 @@ export const Handover = () => {
         }
       }
 
+      if (isTransform) {
+        delete data.is_handover
+      }
+
       const response = await dataGetter.post('/batch_update', {
         app_id: APP_ID,
         entry_id,
@@ -293,110 +328,37 @@ export const Handover = () => {
     start: batchEditStart,
     finished: editFinished,
     loading: editLoading,
-  } = useBatchRequest(batcherEdit, formIds)
+    reset: editResest,
+  } = useBatchRequest(
+    batcherEdit,
+    formIds.map(item => item.entryId)
+  )
 
   const onHandover = useCallback(async () => {
     batchEditStart()
   }, [batchEditStart])
 
+  //编辑完成后立即执行回调并且清空批量调用的状态避免重复触发
   useEffect(() => {
-    if (editFinished && finished && !editLoading) {
-      runHandovered()
+    if (editFinished && !editLoading) {
+      isTransform ? runTransformRecord() : runHandovered()
+      editResest()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editFinished, finished, editLoading])
 
   return (
     <div className={cssHandover}>
-      <Row
-        align={'middle'}
-        justify={'start'}
-        gutter={20}
-        style={{ fontSize: 32, fontWeight: 1000, marginBottom: 16 }}>
-        <strong> 交接顾问种类:</strong>
-
-        <Select
-          value={salesType}
-          onChange={e => setSalesType(e)}
-          style={{
-            width: 400,
-            marginLeft: 20,
-          }}
-          size='large'
-          options={[
-            { value: 'sales', label: '签约顾问' },
-            { value: 'service', label: '服务顾问' },
-            { value: 'cultural', label: '文创顾问' },
-          ]}
-        />
-      </Row>
-      <Row align={'middle'} justify={'start'} gutter={24}>
-        <Col>
-          <strong>学生id:</strong>
-          <Input
-            value={studentId}
-            size='large'
-            style={{
-              width: 500,
-              marginLeft: 20,
-            }}
-            onChange={v => setStudentId(v.target.value?.replace(/-/g, '').trim())}
-          />
-        </Col>
-        <Col>
-          <Button onClick={onClick} type='primary' size='large'>
-            查询
-          </Button>
-        </Col>
-      </Row>
-      {!!studentInfos.length &&
-        sortBy(studentInfos, x => x.sales_json.name)?.map((sdt: any) => {
-          return (
-            <Row gutter={12} style={{ width: '100%' }}>
-              <Col>
-                学生信息：
-                <Tag color='green'>id:{get(sdt, 'lx_id')}</Tag>
-                <Tag color='green'>姓名:{get(sdt, 'student_name')}</Tag>
-                <Tag color='green'>状态:{get(sdt, 'tag_state')}</Tag>
-                <Tag color='green'>是否交接:{get(sdt, 'is_handover')}</Tag>
-              </Col>
-              <Col>
-                签约顾问：
-                <Tag color='green'>{get(sdt, 'sales_json.name')}</Tag>
-              </Col>
-              <Col>
-                签约顾问所在部门：
-                <Tag color='green'>{get(sdt, 'department.name')}</Tag>
-              </Col>
-              <Col>
-                签约顾问主管：
-                <Tag color='green'>{get(sdt, 'manager.name')}</Tag>
-              </Col>
-              <Col>
-                签约顾问所在地区：
-                <Tag color='green'>{get(sdt, 'local')}</Tag>
-              </Col>
-              <Col>
-                服务顾问：
-                <Tag color='green'>{get(sdt, 'service_sale.name')}</Tag>
-              </Col>
-              <Col>
-                文创顾问：
-                <Tag color='green'>{get(sdt, 'cultural_sale.name')}</Tag>
-              </Col>
-            </Row>
-          )
-        })}
-      <Row align={'middle'} gutter={4}>
-        <Col
-          style={{
-            fontWeight: 800,
-            fontSize: 16,
-            color: 'red',
-          }}>
-          交接给：
-        </Col>
-      </Row>
+      <Button
+        size='middle'
+        style={{
+          width: 100,
+        }}
+        onClick={() => {
+          setVisible(true)
+        }}>
+        添加
+      </Button>
       <Row align={'middle'} gutter={4}>
         <Col span={6}>
           ID
@@ -433,47 +395,106 @@ export const Handover = () => {
       <Button
         type='primary'
         onClick={() => onHandover()}
-        disabled={loading || !studentIds?.length || !studentId || !finished}>
+        style={{ width: '15%', marginLeft: 'auto' }}
+        disabled={loading || !studentIds?.length || !allStudent.length || !studentId || !finished}>
         {loading ? '正在查询...' : '交接'}
       </Button>
-      {/* <div>
-        {JSON.stringify({
-          app_id: APP_ID,
-          data_ids: studentInfo._id,
-          data: {
-            sales_json: {
-              value: saleIdInput, //关联数据
-            },
-            manager: {
-              value: manager, //关联数据
-            },
-            department: {
-              value: department, //关联数据
-            },
-            departments: {
-              value: [department], //关联数据
-            },
-            local: {
-              value: local, //关联数据
-            },
+      <Table
+        dataSource={sortBy(allStudent, x => x.sales_json.name)}
+        columns={[
+          {
+            title: 'ID',
+            dataIndex: 'lx_id',
+            key: 'lx_id',
+            render: (text: any) => text || '-',
           },
-        })}
-      </div> */}
+          {
+            title: '姓名',
+            dataIndex: 'student_name',
+            key: 'student_name',
+            render: (text: any) => text || '-',
+          },
+          {
+            title: '状态',
+            dataIndex: 'tag_state',
+            key: 'tag_state',
+            render: (text: any) => text || '-',
+          },
+          {
+            title: '是否交接',
+            dataIndex: 'is_handover',
+            key: 'is_handover',
+            render: (text: any) => (text ? '是' : '否'),
+          },
+          {
+            title: '签约顾问',
+            key: 'sales_json.name',
+            render: (_: any, record: any) => record.sales_json?.name || '-',
+          },
+          {
+            title: '所在部门',
+            key: 'department.name',
+            render: (_: any, record: any) => record.department?.name || '-',
+          },
+          {
+            title: '主管',
+            key: 'manager.name',
+            render: (_: any, record: any) => record.manager?.name || '-',
+          },
+          {
+            title: '地区',
+            dataIndex: 'local',
+            key: 'local',
+            render: (text: any) => text || '-',
+          },
+          {
+            title: '服务顾问',
+            key: 'service_sale.name',
+            render: (_: any, record: any) => record.service_sale?.name || '-',
+          },
+          {
+            title: '文创顾问',
+            key: 'cultural_sale.name',
+            render: (_: any, record: any) => record.cultural_sale?.name || '-',
+          },
+        ]}
+      />
 
-      <div>
-        {formIds.map(id => {
-          return (
-            <Row style={{ marginTop: 4, width: 300 }} justify={'space-between'}>
-              <Tag>{id}</Tag>
-              {entryMapStatus[id] === true ? (
-                <CheckOutlined style={{ color: 'green' }} />
-              ) : (
-                <CloseOutlined style={{ color: 'red' }} />
-              )}
-            </Row>
-          )
-        })}
-      </div>
+      <HandoverModal
+        okDisabled={!finished}
+        visible={visible}
+        setVisible={setVisible}
+        salesType={salesType}
+        setSalesType={setSalesType}
+        isTransform={isTransform}
+        setIsTransform={setIsTransform}
+        studentId={studentId}
+        setStudentId={setStudentId}
+        onClick={onClick}
+        studentInfos={studentInfos}
+        setAllStudents={setAllStudents}
+        loading={loading}
+      />
+      <Modal open={editLoading}>
+        <div>
+          {formIds.map(item => {
+            return (
+              <Row style={{ marginTop: 4, width: 400 }} justify={'space-between'}>
+                <Tag>
+                  {item.entryId}---{item.entryName}
+                </Tag>
+                {entryMapStatus[item.entryId] === true ? (
+                  <CheckOutlined style={{ color: 'green' }} />
+                ) : (
+                  entryMapStatus[item.entryId] === false && (
+                    <CloseOutlined style={{ color: 'red' }} />
+                  )
+                )}
+              </Row>
+            )
+          })}
+        </div>
+      </Modal>
     </div>
   )
 }

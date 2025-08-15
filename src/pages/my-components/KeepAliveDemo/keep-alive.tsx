@@ -60,9 +60,9 @@ export const KeepAliveProvider = (props: PropsWithChildren<Props>) => {
 
   const keep = useMemo(() => {
     return (name: string, children: ReactNode, cb?: () => void) => {
-      return new Promise<HTMLDivElement>(async (resolve) => {
+      return new Promise<HTMLDivElement>(async resolve => {
         const callback = () =>
-          new Promise<null>((resolve) => {
+          new Promise<null>(resolve => {
             cb?.()
             setTimeout(() => {
               resolve(null)
@@ -97,7 +97,7 @@ export const KeepAliveProvider = (props: PropsWithChildren<Props>) => {
             {_.map(items, (render: any, name: any) => {
               return (
                 <div
-                  ref={(r) => {
+                  ref={r => {
                     if (exclude?.includes(name) || !r) return
                     invisibleRefs.current[name] = r
                   }}
@@ -134,7 +134,7 @@ export const KeepAlive = (props: PropsWithChildren<KeepLiveItem>) => {
   const keepAlive = !items[name] && !disabled && !isMax
   //注册
   if (keepAlive) {
-    setItems?.((p) => ({ ...p, [name]: children }))
+    setItems?.(p => ({ ...p, [name]: children }))
   }
   //延迟挂载
   useLayoutEffect(() => {
