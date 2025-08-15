@@ -20,10 +20,6 @@ module.exports = function (app) {
       changeOrigin: true,
       secure: false,
       pathRewrite: { '^/jiandaoyun': '/api/v5' },
-      onProxyReq: proxyReq => {
-        // 添加认证头
-        proxyReq.setHeader('Authorization', 'Bearer your_token_here')
-      },
     })
   )
 }
